@@ -2,7 +2,7 @@
 
  This repository contains a Part-of-Speech (PoS) tagging application built using a custom Long Short-Term Memory (LSTM) model. The application uses the NLTK Treebank dataset for training and testing the model. The model is implemented in PyTorch and can be tested using a Streamlit web application.
 
- ![alt text](/iamges/LSTM-POS%20Streamlit.gif)
+ ![alt text](/images/LSTM-POS%20Streamlit.gif)
 
 ### Table of Contents
 - Overview
