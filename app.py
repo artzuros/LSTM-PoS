@@ -39,7 +39,7 @@ tagset = {tag for sent in train_data for word, tag in sent}
 tagset = {tag: i for i, tag in enumerate(tagset)}
 
 # Load the model
-model_loaded = load_model('pos_model.pth', len(vocab), len(tagset), 100, 128)
+model_loaded = load_model('model/pos_model.pth', len(vocab), len(tagset), 100, 128)
 
 # Define color mapping for POS tags
 TAG_COLORS = {

@@ -38,4 +38,4 @@ def train_model(model, train_loader, optimizer, loss_function, epochs=5):
 train_model(model, train_loader, optimizer, loss_function, epochs=EPOCHS)
 
 # Save the model
-torch.save(model.state_dict(), 'pos_model.pth')
+torch.save(model.state_dict(), 'moedl/pos_model.pth')
