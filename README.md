@@ -1,68 +1,94 @@
-# LSTM-PoS
+## LSTM-PoS
 
-Here are the mathematical equations for each step in the forward and backward propagation of the LSTM model:
+ This repository contains a Part-of-Speech (PoS) tagging application built using a custom Long Short-Term Memory (LSTM) model. The application uses the NLTK Treebank dataset for training and testing the model. The model is implemented in PyTorch and can be tested using a Streamlit web application.
 
-### Forward Propagation:
-1. Concatenated input: 
-   - \( \text{concat\_inputs}[q] = [\text{hidden\_states}[q - 1]; \text{inputs}[q]] \)
+ ![alt text](/LSTM-PoS/LSTM-POS%20Streamlit.gif)
 
-2. Forget gate:
-   - \( \text{forget\_gates}[q] = \sigma(\text{wf} \times \text{concat\_inputs}[q] + \text{bf}) \)
+### Table of Contents
+- Overview
+- Mathematical Equations
+- - Forward Propagation
+- - Backward Propagation
+- Installation
+- Usage
+- - Training the Model
+- - Testing the Model
+- - Running the Streamlit App
+- Files
 
-3. Input gate:
-   - \( \text{input\_gates}[q] = \sigma(\text{wi} \times \text{concat\_inputs}[q] + \text{bi}) \)
+### Overview
+ The LSTM-PoS application tags each word in a sentence with its corresponding part-of-speech (PoS) tag. The model uses a custom LSTM architecture to predict the PoS tags. The application includes a Streamlit web interface for easy interaction.
 
-4. Candidate gate:
-   - \( \text{candidate\_gates}[q] = \tanh(\text{wc} \times \text{concat\_inputs}[q] + \text{bc}) \)
+#### Installation
+1. Clone the repository:
+   
+   ```
+   git clone https://github.com/yourusername/LSTM-PoS.git
+   
+   cd LSTM-PoS
+   ```
 
-5. Output gate:
-   - \( \text{output\_gates}[q] = \sigma(\text{wo} \times \text{concat\_inputs}[q] + \text{bo}) \)
+2. Install the required packages:
+   ```
+   pip install -r requirements.txt
+   ```
+3. Download the required NLTK resources:
+   ```
+   import nltk
+   nltk.download('treebank')
+   nltk.download('universal_tagset')
+   ```
 
-6. Cell state:
-   - \( \text{cell\_states}[q] = \text{forget\_gates}[q] \times \text{cell\_states}[q - 1] + \text{input\_gates}[q] \times \text{candidate\_gates}[q] \)
+#### Usage
+##### Running the Streamlit App
+   - Run the Streamlit app
+   - `streamlit run app.py`
+   - Enter a sentence in the text input field to see the PoS tags predicted by the model.
+##### Training the Model
+   - Run train.py to train the model on the NLTK Treebank dataset.
+   - Save the trained model to a file (pos_model.pth).
 
-7. Hidden state:
-   - \( \text{hidden\_states}[q] = \text{output\_gates}[q] \times \tanh(\text{cell\_states}[q]) \)
+##### Testing the Model
+   - Load the trained model using the load_model function.
+   - Test the model on new sentences using the test_model function.
 
-8. Output:
-   - \( \text{outputs}[q] = \text{wy} \times \text{hidden\_states}[q] + \text{by} \)
+#### Files
+- `app.py`: Streamlit web application for PoS tagging.
+- `data_preprocessing.py`: Contains functions for preparing - the dataset and a custom Dataset class.
+- `model.py`: Contains the custom LSTM model definition.
+- `train.py`: Script for training the model.
+- `test.py`: Script for testing the model.
+- `playground4.ipynb`: Jupyter Notebook for training and testing the model.
+- `README.md`: This file.
 
-### Backward Propagation:
-1. Final gate weights and biases errors:
-   - \( \text{dwy} += \text{error} \times \text{hidden\_states}[q]^T \)
-   - \( \text{dby} += \text{error} \)
+#### Mathematical Equations
+##### Forward Propagation:
+- Concatenated input:
+ ( \text{concat_inputs}[q] = [\text{hidden_states}[q - 1]; \text{inputs}[q]] )
 
-2. Hidden state error:
-   - \( \text{d\_hs} = \text{wy}^T \times \text{error} + \text{dh\_next} \)
+- Forget gate:
+ ( \text{forget_gates}[q] = \sigma(\text{wf} \times \text{concat_inputs}[q] + \text{bf}) )
 
-3. Output gate weights and biases errors:
-   - \( \text{d\_o} = \tanh(\text{cell\_states}[q]) \times \text{d\_hs} \times \sigma'(\text{output\_gates}[q]) \)
-   - \( \text{dwo} += \text{d\_o} \times \text{inputs}[q]^T \)
-   - \( \text{dbo} += \text{d\_o} \)
+- Input gate:
+ ( \text{input_gates}[q] = \sigma(\text{wi} \times \text{concat_inputs}[q] + \text{bi}) )
 
-4. Cell state error:
-   - \( \text{d\_cs} = \tanh'(\tanh(\text{cell\_states}[q])) \times \text{output\_gates}[q] \times \text{d\_hs} + \text{dc\_next} \)
+- Candidate gate:
+ ( \text{candidate_gates}[q] = \tanh(\text{wc} \times \text{concat_inputs}[q] + \text{bc}) )
 
-5. Forget gate weights and biases errors:
-   - \( \text{d\_f} = \text{d\_cs} \times \text{cell\_states}[q - 1] \times \sigma'(\text{forget\_gates}[q]) \)
-   - \( \text{dwf} += \text{d\_f} \times \text{inputs}[q]^T \)
-   - \( \text{dbf} += \text{d\_f} \)
+- Output gate:
+ ( \text{output_gates}[q] = \sigma(\text{wo} \times \text{concat_inputs}[q] + \text{bo}) )
 
-6. Input gate weights and biases errors:
-   - \( \text{d\_i} = \text{d\_cs} \times \text{candidate\_gates}[q] \times \sigma'(\text{input\_gates}[q]) \)
-   - \( \text{dwi} += \text{d\_i} \times \text{inputs}[q]^T \)
-   - \( \text{dbi} += \text{d\_i} \)
+- Cell state:
+ ( \text{cell_states}[q] = \text{forget_gates}[q] \times \text{cell_states}[q - 1] + \text{input_gates}[q] \times \text{candidate_gates}[q] )
 
-7. Candidate gate weights and biases errors:
-   - \( \text{d\_c} = \text{d\_cs} \times \text{input\_gates}[q] \times \tanh'(\text{candidate\_gates}[q]) \)
-   - \( \text{dwc} += \text{d\_c} \times \text{inputs}[q]^T \)
-   - \( \text{dbc} += \text{d\_c} \)
+- Hidden state:
+ ( \text{hidden_states}[q] = \text{output_gates}[q] \times \tanh(\text{cell_states}[q]) )
 
-8. Concatenated input error:
-   - \( \text{d\_z} = \text{wf}^T \times \text{d\_f} + \text{wi}^T \times \text{d\_i} + \text{wc}^T \times \text{d\_c} + \text{wo}^T \times \text{d\_o} \)
+- Output:
+ ( \text{outputs}[q] = \text{wy} \times \text{hidden_states}[q] + \text{by} )
 
-9. Error of hidden state and cell state at next time step:
-   - \( \text{dh\_next} = \text{d\_z}[:\text{hidden\_size}, :] \)
-   - \( \text{dc\_next} = \text{forget\_gates}[q] \times \text{d\_cs} \)
-
-Note: \( \sigma(x) \) is the sigmoid function, \( \tanh(x) \) is the hyperbolic tangent function, and \( \sigma'(x) \) and \( \tanh'(x) \) are their derivatives.
+##### Backward Propagation:
+- Final gate weights errors:
+ ( \text{dwy} += \text{error} \times \text{hidden_states}[q]^T )
+- Final gate biases errors:
+ ( \text{dby} += \text{error} )
